@@ -22,10 +22,13 @@ function _init()
 		p = 0, --pitch - rotation around x axis
 		w = 0, --yaw - rotation around y axis
 		r = 0, --roll - rotation around z axis
-		f = 80 --focal length of camera
+		f = 40 --focal length of camera
 	}
 
+	lastclickstats = {}
+	
 	models = {};
+	
 	add(models,makecube(0,0,0,4))
 	add(models,makecube(4,0,0,4))
 	add(models,makecube(8,0,0,4))
@@ -34,42 +37,59 @@ end
 
 function makecube(x,y,z,side)
 	local _v = {}
+	local _f={{1,2,4,3},{5,6,8,7},{1,5,7,3},{2,6,8,4}}
+
+	local model = {
+		v=_v,
+		f=_f,
+		draw = function(self)
+	
+			local f = self.f
+			local v = self.v
+
+			for _f in all(f) do --get all faces
+
+				local points = {}
+
+				local points = {}
+				for i in all(_f) do  --get face vertex index
+				
+					add(points,get2d(v[i][1],v[i][2],v[i][3]))		
+							
+				end
+				for i = 1, #points do
+					if(i < #points) then
+						line(points[i].x,points[i].y,points[i+1].x,points[i+1].y,11)
+					else
+						line(points[i].x,points[i].y,points[1].x,points[1].y,12)
+					end
+				end
+			end
+		end
+	}
 	for i = 0, 8 do
-		local _x = i%2==1 and x or x+side
+		local _x = i%2>0 and x or x+side
 		local _y = i%4>1 and y or y+side
 		local _z = i%8>3 and z or z+side
 		add(_v,{_x,_y,_z})
 	end
-	local _f={{1,2,4,3},{5,6,8,7},{1,5,7,3},{2,6,8,4}}
 
-	return {
-		v=_v,
-		f=_f
-	}
-end
-
-function point(_x,_y,_z)
-	return {
-		x = _x,
-		y = _y,
-		z = _z
-	}
+	
+	return model
 end
 
 function get2d(x,y,z) 
 
-	local _dx = x-camera.x
+	local _dx = x-camera.x 
 	local _dy = y-camera.y
 	local _dz = z-camera.z
-	
+
 	local _rx = cos(camera.p)*_dx - sin(camera.p) * _dy
 	local _ry = sin(camera.p)*_dx + cos(camera.p) * _dy
 
 	local _x=  64 + _rx / _dz * camera.f
 	local _y =  64 + _ry / _dz * camera.f
-	
-	--_x = 64 + (cos(camera.p) * x-camera.x - sin(camera.p)) * y-camera.y / z-camera.z * camera.f
-	
+
 	return {
 		x =	_x,
 		y = _y
@@ -87,34 +107,14 @@ end
 function _draw()
 	cls()
 		
-		for model in all(models) do
-		
-			local f = model.f
-			local v = model.v
-		
-			for _f in all(f) do --get all faces
-			
-				local points = {}
-			
-				local points = {}
-				for i in all(_f) do  --get face vertex index
-				
-					add(points,get2d(v[i][1],v[i][2],v[i][3]))		
-							
-				end
-				for i = 1, #points do
-					if(i < #points) then
-						line(points[i].x,points[i].y,points[i+1].x,points[i+1].y,11)
-					else
-						line(points[i].x,points[i].y,points[1].x,points[1].y,12)
-					end
-				end
-			end
-		end
+	for model in all(models) do
+		model:draw()
+	end
 
 	drawmouse()
 	
 	print('mousex: '..stat(32)..' mousey: '..stat(33)..' click:'..stat(34),0,0,7)
+	print('lastx:'..lastclickstats.x,0,7,7)
 	print('p:'..camera.p..' w:'..camera.w..' r:'..flrd(camera.r,2),0,104,7)
 	print('x:'..flrd(camera.x,2)..' y:'..flrd(camera.y,2)..' z:'..flrd(camera.z,2)..' f:'..camera.f,0,110,7)
 	--print('vertices:'..#v..' faces:'..#f,0,116,7) 
@@ -124,6 +124,8 @@ end
 function flrd(value,d)
  return flr(value*(10^d))/(10^d)
 end
+
+
 
 function listencontrols()
 	if btn(0) then camera.x += 0.5 end
@@ -135,23 +137,29 @@ function listencontrols()
 	if btn(4) then camera.z += 0.5 end
 	if btn(5) then camera.z -= 0.5 end
 	
-	
 	if stat(34) == 1 then
+		if (lastclickstats.x == -1) then
+			lastclickstats.x = stat(32)
+			lastclickstats.y = stat(33)
+			lastclickstats.p = camera.p 
+			lastclickstats.w = camera.w
+		end
 		
-		camera.w = stat(33)*0.01
-		camera.p = stat(32)*0.01
+		camera.p = lastclickstats.p+(lastclickstats.x-stat(32))*0.01
+		camera.w = lastclickstats.w+(lastclickstats.y-stat(33))*0.01
+	else 
+		lastclickstats.x =  -1
 	end
-	
 	
 end
 __gfx__
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700007600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000007777000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000007770000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700007077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000007700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000171000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700177100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000177710000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000177771000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700177110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000011710000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
