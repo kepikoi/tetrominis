@@ -8,87 +8,161 @@ __lua__
 --f={{1,5,96},{10,291,20,19},{100,300,60},{100,60,58},{100,86,300},{101,117,111,82},{102,101,82,299},{102,25,28},{102,28,35},{102,301,19,25},{102,35,36},{102,36,101},{103,301,102},{104,223,96},{104,285,223},{104,291,284},{105,5,7},{105,7,8,106},{106,9,104},{108,118,39},{109,39,114},{110,39,109},{111,39,112},{112,39,113},{113,39,110},{114,39,119},{115,37,297,108},{116,36,37,115},{117,101,36,116},{117,39,111},{118,38,295,119},{120,129,130,121},{121,130,131,122},{122,131,132,123},{123,132,133,124},{124,133,134,125},{125,134,135,126},{126,135,136,127},{127,136,146},{128,137,138,129},{128,280,281,279},{129,138,139,130},{130,139,140,131},{131,140,141,132},{132,141,142,133},{133,142,143,134},{134,143,144,135},{135,144,145,136},{136,145,146},{137,128,282},{137,274,147,138},{138,147,148,139},{139,148,149,140},{14,13,304},{140,149,150,141},{141,150,151,142},{142,151,152,143},{143,152,153,144},{144,153,154,145},{145,154,146},{147,156,157,148},{148,157,158,149},{149,158,159,150},{15,13,11,301},{150,159,160,151},{151,160,161,152},{152,161,162,153},{153,162,163,154},{154,163,146},{155,277,164,156},{156,164,165,157},{157,165,166,158},{158,166,167,159},{159,167,168,160},{16,15,17},{16,17,99},{160,168,169,161},{161,169,170,162},{162,170,171,163},{163,171,146},{164,120,121,165},{165,121,122,166},{166,122,123,167},{167,123,124,168},{168,124,125,169},{169,125,126,170},{17,15,301},{17,18,99},{17,301,18},{170,126,127,171},{171,127,146},{172,188,278,279},{173,172,279,281},{174,189,188,172},{175,174,172,173},{176,190,189,174},{177,176,174,175},{178,191,190,176},{179,178,176,177},{18,103,40},{18,301,103},{18,40,99},{180,192,191,178},{181,180,178,179},{182,193,192,180},{183,182,180,181},{184,194,193,182},{185,184,182,183},{186,195,194,184},{187,186,184,185},{188,196,290,278},{189,197,196,188},{190,198,197,189},{191,199,198,190},{192,200,199,191},{193,201,200,192},{194,202,201,193},{195,203,202,194},{196,205,289,290},{197,206,205,196},{198,207,206,197},{199,208,207,198},{200,209,208,199},{201,210,209,200},{202,211,210,201},{203,212,211,202},{204,186,187},{204,187,220},{204,195,186},{204,203,195},{204,212,203},{204,220,212},{205,213,276,289},{206,214,213,205},{207,215,214,206},{208,216,215,207},{209,217,216,208},{21,20,291,9},{210,218,217,209},{211,219,218,210},{212,220,219,211},{213,173,281,276},{214,175,173,213},{215,177,175,214},{216,179,177,215},{217,181,179,216},{218,183,181,217},{219,185,183,218},{22,23,27},{22,27,309},{220,187,185,219},{221,222,223,285},{222,239,286,223},{224,225,222,221},{225,240,239,222},{226,227,225,224},{227,241,240,225},{228,229,227,226},{229,242,241,227},{23,24,305},{23,305,27},{23,8,7},{230,231,229,228},{231,243,242,229},{232,233,231,230},{233,244,243,231},{234,235,233,232},{235,245,244,233},{236,237,235,234},{237,246,245,235},{238,236,273},{238,237,236},{238,246,237},{238,255,246},{238,264,255},{238,273,264},{239,247,248,286},{24,91,90,305},{240,249,247,239},{241,250,249,240},{242,251,250,241},{243,252,251,242},{244,253,252,243},{245,254,253,244},{246,255,254,245},{247,256,257,248},{248,288,286},{248,51,288},{249,258,256,247},{25,19,20},{25,20,21,26},{25,26,29,28},{250,259,258,249},{251,260,259,250},{252,261,260,251},{253,262,261,252},{254,263,262,253},{255,264,263,254},{256,265,266,257},{257,283,51},{257,51,248},{258,267,265,256},{259,268,267,258},{260,269,268,259},{261,270,269,260},{262,271,270,261},{263,272,271,262},{264,273,272,263},{265,221,285,266},{267,224,221,265},{268,226,224,267},{269,228,226,268},{270,230,228,269},{271,232,230,270},{272,234,232,271},{273,236,234,272},{274,137,282},{274,155,156,147},{275,54,283},{275,98,54},{276,275,289},{276,281,280,277},{277,280,120,164},{28,29,34,35},{280,128,129,120},{282,10,11,303},{282,283,257,266},{282,303,97},{283,278,290},{283,279,278},{283,282,128,279},{283,290,275},{283,52,51},{284,266,285},{284,282,266},{284,285,104},{284,291,282},{286,288,287},{287,288,48},{287,42,94,43},{287,44,41},{287,45,44},{287,48,45},{289,275,290},{29,30,293,34},{291,10,282},{291,104,9},{292,298,306},{292,79,83,84},{293,294,297},{294,295,38},{294,33,295},{294,38,297},{294,88,33},{295,296,114,119},{296,295,33,87},{296,85,109,114},{296,87,298},{297,37,34,293},{297,38,118,108},{298,76,306},{298,78,76},{299,59,61},{299,61,103,102},{3,2,93,96},{30,29,26,309},{30,309,310},{300,57,60},{300,59,57},{301,11,10,19},{302,54,100},{302,55,56},{302,56,54},{303,11,13,14},{303,12,97},{303,14,304},{303,54,98,12},{304,13,15},{304,15,16},{305,90,89},{306,307,75},{306,308,307},{307,69,74,75},{307,70,65},{308,70,307},{309,26,21,22},{309,27,31},{309,31,310},{310,293,30},{310,294,293},{310,31,32},{310,32,294},{32,305,89},{32,31,27,305},{32,89,88},{35,34,37},{35,37,36},{39,115,108},{39,116,115},{39,117,116},{39,118,119},{4,287,43,95},{40,103,61,86},{41,1,93,42},{41,42,287},{42,93,2,94},{43,3,95},{44,107,46},{45,107,44},{48,107,45},{48,47,46,107},{49,47,48},{49,48,288},{49,50,63,64},{5,1,91,24},{5,105,6},{5,6,96},{50,288,51},{50,49,288},{52,50,51},{54,53,52,283},{56,55,53,54},{57,55,302},{58,302,100},{58,57,302},{59,53,55,57},{6,105,106},{60,57,58},{61,59,300},{62,52,53,59},{62,63,50,52},{63,62,68},{64,65,47,49},{65,64,69,307},{65,66,46,47},{66,67,44,46},{66,71,67},{67,92,41,44},{68,62,59,299},{69,64,63,68},{7,5,24,23},{70,66,65},{70,71,66},{71,70,308,76},{71,72,92,67},{71,77,72},{72,90,91,92},{73,68,299},{73,74,69,68},{75,292,306},{76,308,306},{77,71,76},{77,89,90,72},{78,77,76},{78,88,89,77},{79,292,75,74},{8,23,22},{80,73,299},{80,79,74,73},{81,80,299},{81,82,111,112},{82,81,299},{83,79,80},{83,80,81},{83,81,112,113},{84,298,292},{84,83,113,110},{84,85,298},{85,296,298},{85,84,110,109},{86,100,99,40},{86,61,300},{87,33,88,78},{87,78,298},{88,294,32},{9,106,8},{9,8,22,21},{92,91,1,41},{94,2,3,43},{95,3,96,4},{96,106,104},{96,223,286,287},{96,287,4},{96,6,106},{96,93,1},{97,12,98,275},{97,155,274},{97,274,282},{97,275,276,277},{97,277,155},{99,100,54,303},{99,303,304},{99,304,16}}
 
 
+
 function _init()
 	conf = {
-		debug = true
+		debug = true,  --show stats
+		tetrominoside = 4 -- size of tetromino cube
 	}
 
 	poke(0x5f2d, 1) --mouse support
-
+	
+	
+	t = 0 --timer
+	
+	
 	camera = {
-		x = 2,
-		y = 2,
-		z = 8,
+		x = 64,
+		y = 64,
+		z = -41,
 		p = 0, --pitch - rotation around x axis
 		w = 0, --yaw - rotation around y axis
 		r = 0, --roll - rotation around z axis
 		f = 40 --focal length of camera
 	}
 
-	lastclickstats = {}
+	lastclickstats = {}  --temp store for last click 
 	
+	--each model must contain following methods: draw()
 	models = {};
 	
-	add(models,makecube(0,0,0,4))
-	add(models,makecube(4,0,0,4))
-	add(models,makecube(8,0,0,4))
-	add(models,makecube(8,4,0,4))
+	
 end
 
-function makecube(x,y,z,side)
-	local _v = {}
-	local _f={{1,2,4,3},{5,6,8,7},{1,5,7,3},{2,6,8,4}}
 
-	local model = {
-		v=_v,
-		f=_f,
+--3D Model
+Model = {
+	x = 0,
+	y = 0,
+	z = 0,
+	p = 0,
+	w = 0,
+	r = 0,
+	draw = function() end
+}
+Model.__index=Model
+
+--returns random tetromino
+function maketetromino()
+	local tetromino = {
+		cubes = {},
+		x = rnd(30)-15, --init x coord
+		y = rnd(30)-15, --init y coord
+		z = 0, --init z coord
+		p = 0, --pitch
+		w = 0, --yaw
+		r = 0, --roll
+		t = 0, --model timer
+		colors = {rnd(16)+1,rnd(16)+1},
+		speed = (rnd(2)-1)/200, --rotation & fall speed
+		death = 200, --when do models disappear
+		center = {x=0,y=0,z=0},
 		draw = function(self)
-	
-			local f = self.f
-			local v = self.v
-
-			for _f in all(f) do --get all faces
-
-				local points = {}
-
-				local points = {}
-				for i in all(_f) do  --get face vertex index
-				
-					add(points,get2d(v[i][1],v[i][2],v[i][3]))		
-							
-				end
-				for i = 1, #points do
-					if(i < #points) then
-						line(points[i].x,points[i].y,points[i+1].x,points[i+1].y,11)
-					else
-						line(points[i].x,points[i].y,points[1].x,points[1].y,12)
-					end
-				end
+			self.y += self.speed*2
+			self.p += self.speed
+			self.w += self.speed
+			for cube in all(self.cubes) do
+				cube:draw(self)
+			end
+		end,
+		update = function(self)
+			self.t += 1
+			if self.t > self.death then				
+				del(models,self)
 			end
 		end
 	}
+	
+	setmetatable(Model,tetromino)
+	
+	local shapes = {
+		{{0,0,0,1},{1,0,0,1},{2,0,0,1},{2,1,0,1}}, --L
+		{{0,1,0,1},{0,0,0,1},{1,0,0,1},{2,0,0,1}}, --J
+		{{0,0,0,1},{1,0,0,1},{2,0,0,1},{1,1,0,1}}, --T
+		{{1,1,0,1},{1,0,0,1},{2,0,0,1},{2,1,0,1}}, --O
+		{{0,0,0,1},{1,0,0,1},{2,0,0,1},{3,0,0,1}}, --I
+		{{0,0,0,1},{1,0,0,1},{1,1,0,1},{2,1,0,1}}, --Z
+		{{0,1,0,1},{1,1,0,1},{1,0,0,1},{2,0,0,1}} --S
+	}
+	
+	--decide on random shape
+	local s = shapes[flr(rnd(#shapes))+1]
+	local centercube = flr(rnd(4)+1);
+	tetromino.center.x = s[centercube][1]+conf.tetrominoside/2
+	tetromino.center.y = s[centercube][2]+conf.tetrominoside/2
+	tetromino.center.z = s[centercube][3]+conf.tetrominoside/2
+
+	--add shape cubes to model store
+	for i=1,#s do
+		local x = s[i][1]*conf.tetrominoside + tetromino.x
+		local y = s[i][2]*conf.tetrominoside + tetromino.y
+		local z = s[i][3]*conf.tetrominoside + tetromino.z
+		local cube = makecube(x,y,z,conf.tetrominoside)
+		add(tetromino.cubes, cube)		
+	end
+
+	return tetromino
+end
+
+
+function makecube(x,y,z,side)
+	local model = {
+		v = {},
+		f = {{1,2,4,3},{5,6,8,7},{1,5,7,3},{2,6,8,4}},
+		draw = function(self,parent)
+			for _f in all(self.f) do --get all faces
+				local points = {}
+				for i in all(_f) do  --get face vertex index
+					local vertexx = self.v[i][1]+parent.x
+					local vertexy = self.v[i][2]+parent.y
+					local vertexz = self.v[i][3]+parent.z
+					add(points,get2d(vertexx,vertexy,vertexz,parent))			
+				end
+				for i = 1, #points do
+					if(i < #points) then
+						line(points[i].x,points[i].y,points[i+1].x,points[i+1].y,parent.colors[1])
+					else
+						line(points[i].x,points[i].y,points[1].x,points[1].y,parent.colors[2])
+					end
+				end
+			end
+	
+		end
+	}
+	
+	--create vertex map for a cube
 	for i = 0, 8 do
 		local _x = i%2>0 and x or x+side
 		local _y = i%4>1 and y or y+side
 		local _z = i%8>3 and z or z+side
-		add(_v,{_x,_y,_z})
+		add(model.v,{_x,_y,_z})
 	end
-
 	
 	return model
 end
 
-function get2d(x,y,z) 
+function get2d(x,y,z,parent) 
 
-	local _dx = x-camera.x 
-	local _dy = y-camera.y
-	local _dz = z-camera.z
+	local _dx = x-parent.x-parent.center.x
+	local _dy = y-parent.y-parent.center.y
+	local _dz = z-camera.z-parent.center.z
 
-	local _rx = cos(camera.p)*_dx - sin(camera.p) * _dy
-	local _ry = sin(camera.p)*_dx + cos(camera.p) * _dy
-
-	local _x=  64 + _rx / _dz * camera.f
-	local _y =  64 + _ry / _dz * camera.f
+	local _rx = cos(parent.p) * _dx - sin(parent.p) * _dy
+	local _ry = sin(parent.p) * _dx + cos(parent.p) * _dy
+	local _rz = sin(parent.w)* _dz 
+	
+	local _x =  camera.x + (_rx + parent.x )/ _rz * camera.f
+	local _y =  camera.y + ( _ry +parent.y) / _rz * camera.f
 
 	return {
 		x =	_x,
@@ -98,6 +172,17 @@ end
 
 function _update()
 	listencontrols()
+	
+	if t%(flr(rnd(40)+30)) == 0 then
+		add(models,maketetromino())
+	end
+	
+	t += 1
+	
+	for model in all(models) do
+		model:update()
+	end
+	
 end
 
 function drawmouse()
@@ -113,19 +198,59 @@ function _draw()
 
 	drawmouse()
 	
-	print('mousex: '..stat(32)..' mousey: '..stat(33)..' click:'..stat(34),0,0,7)
-	print('lastx:'..lastclickstats.x,0,7,7)
-	print('p:'..camera.p..' w:'..camera.w..' r:'..flrd(camera.r,2),0,104,7)
-	print('x:'..flrd(camera.x,2)..' y:'..flrd(camera.y,2)..' z:'..flrd(camera.z,2)..' f:'..camera.f,0,110,7)
-	--print('vertices:'..#v..' faces:'..#f,0,116,7) 
-	print('cpu:'..flrd(100*stat(1),0)..'% ram:'..flrd(stat(0),2),0,122,7) 
+	if conf.debug then
+		drawdebug()
+	end
+	
 end
 
+--floor to set amount of deimals
+--@param {Float value - number to apply floor to
+--@param {Integer} d - amount of decimals to round the value to
 function flrd(value,d)
  return flr(value*(10^d))/(10^d)
 end
 
+function pointinsidearea(px,py,points)
+	local pointarea = 0;
+	
+	for i = 1, #points do
+		if(i < #points) then
+			local point = {points[i],points[i+1],{x=px,y=py}}
+			pointarea += polygonarea(point)
+		else
+			local point = {points[i],points[1],{x=px,y=py}}
+			pointarea += polygonarea(point)
+		end
+	end
+	
+	return pointarea <= polygonarea(points)
+end
 
+--calculate area of polygon
+--@param {Table} points - e.g. {{x,y,z,{x,y,z}}
+function polygonarea(points)
+	local area = 0	
+	
+	for i=1, #points do
+		if(i < #points) then
+			area += (points[i].x*points[i+1].y - points[i+1].x*points[1].y)
+		else
+			area += (points[i].x*points[1].y - points[1].x*points[i].y)
+		end
+	end
+
+	return 0.5*area
+end
+
+function drawdebug ()
+	print('mousex: '..stat(32)..' mousey: '..stat(33)..' click:'..stat(34),0,0,7)
+	--print('lastx:'..lastclickstats.x,0,7,7)
+	print('p:'..camera.p..' w:'..camera.w..' r:'..flrd(camera.r,2),0,104,7)
+	print('x:'..flrd(camera.x,2)..' y:'..flrd(camera.y,2)..' z:'..flrd(camera.z,2)..' f:'..camera.f,0,110,7)
+	print('models:'..#models,0,116,7) 
+	print('cpu:'..flrd(100*stat(1),0)..'% ram:'..flrd(stat(0),2),0,122,7) 
+end
 
 function listencontrols()
 	if btn(0) then camera.x += 0.5 end
