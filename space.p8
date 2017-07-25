@@ -31,7 +31,10 @@ function _init()
 		f = 40 --focal length of camera
 	}
 
-	lastclickstats = {}  --temp store for last click 
+	--temp store for last click 
+	laststats = {
+		cpu=0
+	}  
 	
 	--each model must contain following methods: draw()
 	models = {};
@@ -58,12 +61,12 @@ function maketetromino()
 		cubes = {},
 		x = rnd(30)-15, --init x coord
 		y = rnd(30)-15, --init y coord
-		z = 0, --init z coord
-		p = 0, --pitch
+		z = 1, --init z coord
+		p = rnd(1), --pitch
 		w = 0, --yaw
 		r = 0, --roll
 		t = 0, --model timer
-		colors = {rnd(16)+1,rnd(16)+1},
+		colors = {rnd(8)+1,rnd(7)+9},
 		speed = (rnd(2)-1)/200, --rotation & fall speed
 		death = 200, --when do models disappear
 		center = {x=0,y=0,z=0},
@@ -77,9 +80,9 @@ function maketetromino()
 		end,
 		update = function(self)
 			self.t += 1
-			if self.t > self.death then				
+		--[[	if self.z <= 0.9 then				
 				del(models,self)
-			end
+			end ]]--
 		end
 	}
 	
@@ -173,9 +176,12 @@ end
 function _update()
 	listencontrols()
 	
-	if t%(flr(rnd(40)+30)) == 0 then
+	if laststats.cpu<0.8 then
+	--	print(laststats.cpu,50,50,8)
+		--flip()
 		add(models,maketetromino())
 	end
+	
 	
 	t += 1
 	
@@ -202,6 +208,8 @@ function _draw()
 		drawdebug()
 	end
 	
+	
+	laststats.cpu = stat(1)
 end
 
 --floor to set amount of deimals
@@ -245,11 +253,11 @@ end
 
 function drawdebug ()
 	print('mousex: '..stat(32)..' mousey: '..stat(33)..' click:'..stat(34),0,0,7)
-	--print('lastx:'..lastclickstats.x,0,7,7)
+	--print('lastx:'..laststats.x,0,7,7)
 	print('p:'..camera.p..' w:'..camera.w..' r:'..flrd(camera.r,2),0,104,7)
 	print('x:'..flrd(camera.x,2)..' y:'..flrd(camera.y,2)..' z:'..flrd(camera.z,2)..' f:'..camera.f,0,110,7)
 	print('models:'..#models,0,116,7) 
-	print('cpu:'..flrd(100*stat(1),0)..'% ram:'..flrd(stat(0),2),0,122,7) 
+	print('cpu:'..flrd(100*laststats.cpu,0)..'% ram:'..flrd(stat(0),2),0,122,7) 
 end
 
 function listencontrols()
@@ -263,17 +271,17 @@ function listencontrols()
 	if btn(5) then camera.z -= 0.5 end
 	
 	if stat(34) == 1 then
-		if (lastclickstats.x == -1) then
-			lastclickstats.x = stat(32)
-			lastclickstats.y = stat(33)
-			lastclickstats.p = camera.p 
-			lastclickstats.w = camera.w
+		if (laststats.x == -1) then
+			laststats.x = stat(32)
+			laststats.y = stat(33)
+			laststats.p = camera.p 
+			laststats.w = camera.w
 		end
 		
-		camera.p = lastclickstats.p+(lastclickstats.x-stat(32))*0.01
-		camera.w = lastclickstats.w+(lastclickstats.y-stat(33))*0.01
+		camera.p = laststats.p+(laststats.x-stat(32))*0.01
+		camera.w = laststats.w+(laststats.y-stat(33))*0.01
 	else 
-		lastclickstats.x =  -1
+		laststats.x =  -1
 	end
 	
 end
