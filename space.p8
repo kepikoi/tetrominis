@@ -15,9 +15,9 @@ function _init()
     poke(0x5f2d, 1) --mouse support for shits and giggles
 
     camera = {
-        x = 2,
-        y = 4,
-        z = -30,
+        x = 1.5,
+        y = -3.5,
+        z = 32,
         p = 0, --pitch - rotation around x axis
         w = 0, --yaw - rotation around y axis
         r = 0, --roll - rotation around z axis
@@ -50,45 +50,49 @@ function _init()
     Mesh = {
         v = {}, --vertices
         f = {}, --faces
+        --convert 3d space to 2d projection
         get2d = function(self, parent)
-            local _x = self.x - parent.center.x
-            local _y = self.y - parent.center.y
-            local _z = self.z - parent.center.z
-            local p = parent.p - camera.p
-            local r = parent.r - camera.r
-            local w = parent.w - camera.w
-
-            local _px = _x * cos(p) - _y * sin(p)
-            local _py = _x * sin(p) + _y * cos(p)
-            local _pz = _z
-
---            local _wx = _py * cos(w) - _pz * sin(w);
---            local _wy = _py * sin(w) + _pz * cos(w);
---            local _wz = _px
---
---            local _rx = _wz * cos(r) - _wx * sin(r);
---            local _ry = _wz * sin(r) + _wx * cos(r);
---            local _rz = _wy
-
-            local X = _px;
-            local Y = _py;
-            local Z = camera.z + _pz + parent.center.z;
-
-            return {
-                --convert 2d
-                x = 64 + (camera.x + X + parent.center.x) / (Z) * camera.f,
-                y = 64 + (camera.y + Y + parent.center.y) / (Z) * camera.f,
-                color = Z < camera.z + parent.center.z and 8 or 3,
-                z = Z
-            }
-        end,
-        draw = function(self, parent)
-            local _parent = parent
             if parent == nil then
                 --assign an dummy parent if not provided
                 _parent = {}
                 setmetatable(Model, _parent)
             end
+
+            local _x = self.x --  - parent.center.x
+            local _y = self.y -- - parent.center.y
+            local _z = self.z -- - parent.center.z
+
+            local p = parent.p -- - camera.p
+            local r = parent.r -- - camera.r
+            local w = parent.w -- - camera.w
+
+            local _px = _x * cos(p) - _y * sin(p)
+            local _py = _x * sin(p) + _y * cos(p)
+            local _pz = _z
+
+            local _wx = _py * cos(w) - _pz * sin(w);
+            local _wy = _py * sin(w) + _pz * cos(w);
+            local _wz = _px
+
+            local _rx = _wz * cos(r) - _wx * sin(r);
+            local _ry = _wz * sin(r) + _wx * cos(r);
+            local _rz = _wy
+
+            local X = _rx;
+            local Y = _ry;
+            local Z = _rz
+
+            return {
+                --convert 2d
+                x = 64 + (camera.x + X + parent.center.x) / (camera.z + Z) * camera.f,
+                y = 64 + (camera.y + Y + parent.center.y) / (camera.z + Z) * camera.f,
+                color = Z < camera.z + parent.center.z and 8 or 3,
+                --use z to decide z-index
+                visible = camera.z + Z + parent.center.z > 5; --magic number of visibility
+            }
+        end,
+        draw = function(self, parent) --todo: collect all faces in table and draw sorted in order to correctly dislay order
+            local _parent = parent
 
             for _f in all(self.f) do --get all faces
                 local points = {}
@@ -98,7 +102,7 @@ function _init()
                     self.z = self.v[i][3] + _parent.z
 
                     --acclerate cubes individually if parent exploded
-                    if parent.exploded then
+                    if _parent.exploded then
                         self.x = self.x + self.speed.x
                         self.y = self.y + self.speed.y
                         self.z = self.z + self.speed.z
@@ -107,11 +111,28 @@ function _init()
                     add(points, self:get2d(_parent)) --get cube point in 2d context
                 end
                 for i = 1, #points do
+                    local _xA = points[i].x
+                    local _yA = points[i].y
+                    local _visibleA = points[i].visible
+                    local _xO, _yO, _visibleO, col
+
                     --connect 2d points
-                    if (i < #points) then
-                        line(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, _parent.colors[1])
-                    else
-                        line(points[i].x, points[i].y, points[1].x, points[1].y, _parent.colors[2])
+                    if (_visibleA) then
+                        if (i < #points) then
+                            _xO = points[i + 1].x
+                            _yO = points[i + 1].y
+                            _visibleO = points[i + 1].visible
+                            col = _parent.colors[1]
+                        else
+                            _xO = points[1].x
+                            _yO = points[1].y
+                            _visibleO = points[1].visible
+                            col = _parent.colors[2]
+                        end
+
+                        if (_visibleO) then
+                            line(_xA, _yA, _xO, _yO, col)
+                        end
                     end
                 end
             end
@@ -119,25 +140,25 @@ function _init()
     }
     Mesh.__index = Mesh
 
-    --makes & returns random tetromino model
+    -- create random tetromino
     function maketetromino()
         local tetromino = {
-            cubes = {}, --contents added later
+            cubes = {}, --4 cubes a tetromino consists of
             id = flr(rnd(1000)),
             x = rnd(30) - 15, --init x coord
             y = rnd(30) - 15, --init y coord
-            z = 0, --init z coord
+            z = rnd(10) - 5, --init z coord
             p = rnd(1), --pitch
-            w = 0, --yaw
-            r = 0, --roll
+            w = rnd(1), --yaw
+            r = rnd(1), --roll
             center = {
                 x = 0,
                 y = 0,
                 z = 0
             },
-            exploded = false,
+            exploded = false, --cubes will acclerate indepedantly
             colors = { rnd(8) + 1, rnd(7) + 9 },
-            speed = (rnd(4) + 2) / 2000, --rotation & fall speed
+            speed = (rnd(4) + 2) / 20, --rotation & fall speed
             draw = function(self)
                 --draw all cubes inside tetromino
                 for cube in all(self.cubes) do
@@ -145,18 +166,20 @@ function _init()
                 end
             end,
             update = function(self)
-             --   self.y = self.y + self.speed
-                self.p = self.p + self.speed
-                self.r = self.r + self.speed
-                self.w = self.w + self.speed
-                self.z = self.z + self.speed
+                --   self.x = self.x + self.speed
+                -- self.y = self.y + self.speed
+                -- self.z = self.z
+                -- self.p = self.p + 0.01
+                -- self.r = self.r + self.speed
+                -- self.w = self.w + self.speed
 
-                if self.z ^ 2 > 0.25 then
-                   -- del(models, self)
-                end
+                --remove condition tetromino
+                -- if self.z ^ 2 > 0.25 then
+                -- del(models, self)
+                -- end
 
                 if rnd(100) < 1 and not self.exploded then
-                   self.exploded = true
+                    self.exploded = true
                 end
 
                 for cube in all(self.cubes) do
@@ -166,6 +189,7 @@ function _init()
         }
         setmetatable(tetromino, Model)
 
+        -- tetromino build schemas
         local shapes = {
             { { 0, 0, 0, 1 }, { 1, 0, 0, 1 }, { 2, 0, 0, 1 }, { 2, 1, 0, 1 } }, --L
             { { 0, 1, 0, 1 }, { 0, 0, 0, 1 }, { 1, 0, 0, 1 }, { 2, 0, 0, 1 } }, --J
@@ -178,7 +202,7 @@ function _init()
 
         --decide on random shape
         local s = shapes[flr(rnd(#shapes)) + 1]
-        local centercube = flr(rnd(4) + 1);
+        local centercube = flr(rnd(4) + 1); -- rotation revolves around the center cube
         tetromino.center.x = s[centercube][1] + conf.tetrominoside / 2
         tetromino.center.y = s[centercube][2] + conf.tetrominoside / 2
         tetromino.center.z = s[centercube][3] + conf.tetrominoside / 2
@@ -195,26 +219,24 @@ function _init()
         return tetromino
     end
 
+    -- create 3d cube
+    -- @param {Number} x,y,z - cube position
+    -- @param {Number} side - side length of the cube
     function makecube(x, y, z, side)
         local model = {
-            v = {},
-            f = { { 1, 2, 4, 3 }, { 5, 6, 8, 7 }, { 1, 5, 7, 3 }, { 2, 6, 8, 4 } },
+            v = {}, --points
+            f = { { 1, 2, 4, 3 }, { 5, 6, 8, 7 }, { 1, 5, 7, 3 }, { 2, 6, 8, 4 } }, -- multiple connected points yield faces
             speed = {
-                --own cube speed. usually 0 except when exploded
+                --each cube has own speed. usually 0 except when exploded
                 x = rnd(1) - 0.5,
                 y = rnd(1) - 0.5,
                 z = rnd(1) - 0.5
             },
             update = function(self, parent)
-                if parent.exploded then
-                    --[[   self.speed.x = self.speed.x * 1.01
-                       self.speed.y = self.speed.y + 1.01
-                       self.speed.z = self.speed.z + 1.01 ]] --
-                end
             end
         }
-        setmetatable(model, Model)
-        setmetatable(model, Mesh)
+        setmetatable(model, Model);
+        setmetatable(model, Mesh);
 
         --create vertex map for a cube
         for i = 0, 8 do
@@ -274,7 +296,7 @@ function _init()
         print('mousex: ' .. stat(32) .. ' mousey: ' .. stat(33) .. ' click:' .. stat(34), 0, 0, 7)
         --print('lastx:'..laststats.x,0,7,7)
         print('p:' .. camera.p .. ' w:' .. camera.w .. ' r:' .. flrd(camera.r, 2), 0, 104, 7)
-        print('x:' .. flrd(camera.x, 2) .. ' y:' .. flrd(camera.y, 2) .. ' z:' .. flrd(camera.z, 2) .. ' f:' .. camera.f, 0, 110, 7)
+        print('x:' .. flrd(camera.x, 2) .. ' y:' .. flrd(camera.y, 2) .. ' z:' .. flrd(camera.z, 1) .. ' f:' .. camera.f, 0, 110, 7)
         print('models:' .. #models, 0, 116, 7)
         print('cpu:' .. flrd(100 * laststats.cpu, 0) .. '% ram:' .. flrd(stat(0), 2), 0, 122, 7)
     end
@@ -284,8 +306,8 @@ function _init()
         if (btn(1)) then camera.x = camera.x - 0.5 end
         if (btn(2)) then camera.y = camera.y + 0.5 end
         if (btn(3)) then camera.y = camera.y - 0.5 end
-        if (btn(4, 0)) then camera.z = camera.z + 0.5 end
-        if (btn(5, 0)) then camera.z = camera.z - 0.5 end
+        if (btn(4, 0)) then camera.z = camera.z + 0.1 end
+        if (btn(5, 0)) then camera.z = camera.z - 0.1 end
 
         if (btnp(4, 1)) then conf.pause = not conf.pause end
         if (btnp(5, 1)) then conf.debug = not conf.debug end
@@ -298,6 +320,7 @@ function _init()
                 laststats.w = camera.w
             end
 
+            --  rotate camera
             camera.p = laststats.p + (laststats.x - stat(32)) * 0.01
             camera.w = laststats.w + (laststats.y - stat(33)) * 0.01
         else
@@ -305,13 +328,13 @@ function _init()
         end
     end
 
-    --sort model by its z heigth
+    --sort model by its z
     function sortz(t)
         local sorted = t
         local temp = {}
 
         for j = 1, #sorted - 1 do
-            if cos(t[j].z) < cos(sorted[j + 1].z) then
+            if (t[j].z) > (sorted[j + 1].z) then
                 temp = sorted[j + 1]
                 sorted[j + 1] = sorted[j]
                 sorted[j] = temp
@@ -320,7 +343,7 @@ function _init()
 
         if (conf.debug) then
             for s = 1, #sorted do
-                print('id:' .. sorted[s].id .. ' z:' .. sorted[s].z, 0, 7 * s, sorted[s].colors[1])
+                print('id:' .. sorted[s].id .. ' z:' .. flrd(sorted[s].z,1) ..' x:' .. flrd(sorted[s].x,1)..' y:' .. flrd(sorted[s].y,1), 0, 7 * s, sorted[s].colors[1])
             end
         end
 
@@ -328,12 +351,11 @@ function _init()
     end
 end
 
---add(models, makeshuttle())
-
 function _update60()
     listencontrols()
 
     if (not conf.pause) then
+        -- add tetrominos until cpu threshold
         if laststats.cpu < conf.maxCpu and #models < conf.maxmodels then
             add(models, maketetromino())
         end
@@ -342,15 +364,15 @@ function _update60()
             model:update()
         end
 
-        camera.p = camera.p + 0.0001
-    else
-        --add(models, makeshuttle)
+        --autorotate camera
+        --camera.p = camera.p + 0.0001
     end
 end
 
 function _draw()
     cls()
 
+    -- sort tetrominos by z-index before drawing
     local _m = sortz(models)
     for model in all(_m) do
         model:draw()
