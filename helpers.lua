@@ -15,8 +15,12 @@ helpers.sortz = function(t)
     end
 
     if (conf.debug) then
-        for s = 1, #sorted do
-            print('id:' .. sorted[s].id .. ' z:' .. helpers.flrd(sorted[s].z, 1) .. ' x:' .. helpers.flrd(sorted[s].x, 1) .. ' y:' .. helpers.flrd(sorted[s].y, 1), 0, 7 * s, sorted[s].colors[1])
+        for o = 1, #sorted do
+            local s = sorted[o]
+            local y = 7 * o;
+            rectfill(0, y, 1, y + 4, s.colors[1])
+            rectfill(2, y, 3, y + 4, s.colors[2])
+            print('id' .. s.id .. ' z' .. helpers.flrd(s.z, 0) .. ' x' .. helpers.flrd(s.x, 0) .. ' y' .. helpers.flrd(s.y, 0) .. ' p' .. helpers.flrd(s.p, 0) .. ' r' .. helpers.flrd(s.r, 0) .. ' w' .. helpers.flrd(s.w, 0), 6, y, s.colors[1])
         end
     end
 

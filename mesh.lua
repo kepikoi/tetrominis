@@ -60,8 +60,7 @@ Mesh = {
     get2d = function(self, parent)
 
         if (not parent) then
-            --parent is required
-            parent = self
+            parent = self --parent is rotational center pivot
         end
 
         local _x = self.x - parent.x
@@ -72,25 +71,35 @@ Mesh = {
         local r = parent.r
         local w = parent.w
 
-        local _px = _x * cos(p) - _y * sin(p)
-        local _py = _x * sin(p) + _y * cos(p)
+        local sinp = sin(p);
+        local cosp = cos(p);
+        local sinr = sin(r);
+        local cosr = cos(r);
+        local sinw = sin(w);
+        local cosw = cos(w);
 
-        local _wx = _py * cos(w) - _z * sin(w)
-        local _wy = _py * sin(w) + _z * cos(w)
+        local _px = _x * cosp - _y * sinp
+        local _py = _x * sinp + _y * cosp
+        local _pz = _z
 
-        local _rx = _px * cos(r) - _wx * sin(r)
-        local _ry = _px * sin(r) + _wx * cos(r)
+        local _rx = _px * cosr - _pz * sinr
+        local _ry = _px * sinr + _pz * cosr
+        local _rz = _py
 
-        local X = _rx + camera.x + parent.x
-        local Y = _ry + camera.y + parent.y
-        local Z = _wy + camera.z + parent.z
+        local _wx = _rz * cosw - _ry * sinw
+        local _wy = _rz * sinw + _ry * cosw
+        local _wz = _rx
+
+        local X = _wx + camera.x + parent.x
+        local Y = _wy + camera.y + parent.y
+        local Z = _wz + camera.z + parent.z
 
         return {
             --convert 2d
             x = 64 + X / Z * camera.f,
             y = 64 + Y / Z * camera.f,
             z = Z, --depth information
-            visible = Z > 1; --magic number of visibility
+            visible = Z > 1; --visible if infront of camera
         }
     end
 }

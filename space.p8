@@ -1,20 +1,28 @@
 pico-8 cartridge // http://www.pico-8.com
 version 8
 __lua__
+globals = {}
 --------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\conf.lua---------------------
 m86071b29ef5ab36a54d653581fcfd8c8 = function()
     return {
-    debug = false, --show stats, can be toggled by second players "a" button
     tetrominoside = 4, -- size of tetromino cube
     maxCpu = 0.85, --allow add models until max cpu threshold
-    maxmodels = 6, --maximal amount of models until cpu threshold,
-    pause = false, -- pause action, can be toggled by second players "b" button,
+    maxModels = 6, --maximal amount of models until cpu threshold,
+    pause = false, --show stats, can be toggled by second players "a" button,
+    debug  = false, -- stop drawing when paused. Updates are still runnung,
+    toggleDebug = function(self)
+        self.debug = not self.debug
+    end,
+    togglePause = function(self)
+        self.pause = not self.pause
+    end
 }
 end
+m86071b29ef5ab36a54d653581fcfd8c8 = m86071b29ef5ab36a54d653581fcfd8c8()
 --------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\helpers.lua---------------------
 me50f94349c050c92b67a239b71bb5d5a = function()
     local helpers = {};
-local conf = m86071b29ef5ab36a54d653581fcfd8c8();
+local conf = m86071b29ef5ab36a54d653581fcfd8c8;
 
 --sort model by its z
 helpers.sortz = function(t)
@@ -30,8 +38,12 @@ helpers.sortz = function(t)
     end
 
     if (conf.debug) then
-        for s = 1, #sorted do
-            print('id:' .. sorted[s].id .. ' z:' .. helpers.flrd(sorted[s].z, 1) .. ' x:' .. helpers.flrd(sorted[s].x, 1) .. ' y:' .. helpers.flrd(sorted[s].y, 1), 0, 7 * s, sorted[s].colors[1])
+        for o = 1, #sorted do
+            local s = sorted[o]
+            local y = 7 * o;
+            rectfill(0, y, 1, y + 4, s.colors[1])
+            rectfill(2, y, 3, y + 4, s.colors[2])
+            print('id' .. s.id .. ' z' .. helpers.flrd(s.z, 0) .. ' x' .. helpers.flrd(s.x, 0) .. ' y' .. helpers.flrd(s.y, 0) .. ' p' .. helpers.flrd(s.p, 0) .. ' r' .. helpers.flrd(s.r, 0) .. ' w' .. helpers.flrd(s.w, 0), 6, y, s.colors[1])
         end
     end
 
@@ -80,6 +92,7 @@ end
 
 return helpers;
 end
+me50f94349c050c92b67a239b71bb5d5a = me50f94349c050c92b67a239b71bb5d5a()
 --------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\mesh.lua---------------------
 m5ef8c140b8ef1dca2719f4d87d37a8f4 = function()
     --3D Mesh metatable
@@ -144,8 +157,7 @@ Mesh = {
     get2d = function(self, parent)
 
         if (not parent) then
-            --parent is required
-            parent = self
+            parent = self --parent is rotational center pivot
         end
 
         local _x = self.x - parent.x
@@ -156,25 +168,35 @@ Mesh = {
         local r = parent.r
         local w = parent.w
 
-        local _px = _x * cos(p) - _y * sin(p)
-        local _py = _x * sin(p) + _y * cos(p)
+        local sinp = sin(p);
+        local cosp = cos(p);
+        local sinr = sin(r);
+        local cosr = cos(r);
+        local sinw = sin(w);
+        local cosw = cos(w);
 
-        local _wx = _py * cos(w) - _z * sin(w)
-        local _wy = _py * sin(w) + _z * cos(w)
+        local _px = _x * cosp - _y * sinp
+        local _py = _x * sinp + _y * cosp
+        local _pz = _z
 
-        local _rx = _px * cos(r) - _wx * sin(r)
-        local _ry = _px * sin(r) + _wx * cos(r)
+        local _rx = _px * cosr - _pz * sinr
+        local _ry = _px * sinr + _pz * cosr
+        local _rz = _py
 
-        local X = _rx + camera.x + parent.x
-        local Y = _ry + camera.y + parent.y
-        local Z = _wy + camera.z + parent.z
+        local _wx = _rz * cosw - _ry * sinw
+        local _wy = _rz * sinw + _ry * cosw
+        local _wz = _rx
+
+        local X = _wx + camera.x + parent.x
+        local Y = _wy + camera.y + parent.y
+        local Z = _wz + camera.z + parent.z
 
         return {
             --convert 2d
             x = 64 + X / Z * camera.f,
             y = 64 + Y / Z * camera.f,
             z = Z, --depth information
-            visible = Z > 1; --magic number of visibility
+            visible = Z > 1; --visible if infront of camera
         }
     end
 }
@@ -182,9 +204,10 @@ Mesh.__index = Mesh
 
 return Mesh
 end
+m5ef8c140b8ef1dca2719f4d87d37a8f4 = m5ef8c140b8ef1dca2719f4d87d37a8f4()
 --------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\cube.lua---------------------
 mfa0a46a1e3d1569e253b07398af99bc6 = function()
-    local Mesh = m5ef8c140b8ef1dca2719f4d87d37a8f4();
+    local Mesh = m5ef8c140b8ef1dca2719f4d87d37a8f4;
 
 -- create 3d cube
 -- @param {Number} x,y,z - cube position
@@ -218,40 +241,58 @@ end
 
 return cube;
 end
+mfa0a46a1e3d1569e253b07398af99bc6 = mfa0a46a1e3d1569e253b07398af99bc6()
 --------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\tetromino.lua---------------------
 mb94f04441f1a64eb3220caee4282b447 = function()
-    local Mesh = m5ef8c140b8ef1dca2719f4d87d37a8f4();
-local cube = mfa0a46a1e3d1569e253b07398af99bc6();
-local conf = m86071b29ef5ab36a54d653581fcfd8c8();
+    local Mesh = m5ef8c140b8ef1dca2719f4d87d37a8f4;
+local cube = mfa0a46a1e3d1569e253b07398af99bc6;
+local conf = m86071b29ef5ab36a54d653581fcfd8c8;
 
 -- create random tetromino
 function tetromino()
+    local axi = { "p", "r", "w" }
+    local randomFastAxis = axi[flr(rnd(3) + 1)];
+    axi[randomFastAxis] = nil;
+    local randomSlowAxis = axi[flr(rnd(2) + 1)];
+
     local tetromino = {
         cubes = {}, -- a tetromino consists of four cubes
         id = flr(rnd(1000)),
         exploded = false, --cubes will acclerate indepedantly
         colors = { rnd(8) + 1, rnd(7) + 9 },
-        speed = (rnd(4) + 2) / 10, --rotation & fall speed
-        x = rnd(64)-32,
-        y = rnd(64)-32,
-        z = rnd(64)-32,
+        speedFast = (rnd(4) + 2) / 1000, --rotation & fall speed
+        speedSlow = (rnd(4) + 2) / 5000, --rotation & fall speed for second axis
+        x = rnd(64) - 32,
+        y = rnd(64) - 32,
+        z = rnd(64) - 32,
         draw = function(self)
             --draw all cubes inside tetromino
             for cube in all(self.cubes) do
                 cube:draw(self)
             end
 
-            -- draw tetromino center point
-            local t = self:get2d();
-            circfill(t.x, t.y, camera.f / t.z, rnd(1) > 0.5 and self.colors[1] or self.colors[2]);
+            if (conf.debug) then
+                -- draw tetromino center point
+                local t = self:get2d();
+                circfill(t.x, t.y, camera.f / t.z, rnd(1) > 0.5 and self.colors[1] or self.colors[2]);
+            end
         end,
         update = function(self)
-            self.x = self.x + self.speed / 10
-            self.y = self.y + self.speed / 10
-            self.z = self.z + self.speed / 10
-            self.p = self.p + self.speed / 100 --(rnd(100) - 50)
-            -- self.r = self.r + self.speed / 100 --(rnd(100) - 50)
+            -- self.x = self.x + self.speed / 10
+            -- self.y = self.y + self.speed / 10
+            -- self.z = self.z + self.speed / 10
+            -- self.p = self.p + self.speed / 100 --(rnd(100) - 50)
+            --self.r = self.r + self.speed / 100 --(rnd(100) - 50)
             -- self.w = self.w + self.speed / 100 --(rnd(100) - 50)
+
+            self[randomFastAxis] = self[randomFastAxis] + self.speedFast
+            self[randomSlowAxis] = self[randomSlowAxis] + self.speedFast
+
+
+            if (btn(0)) then self.p = self.p + 0.008 end
+            if (btn(1)) then self.w = self.w - 0.008 end
+            if (btn(2)) then self.r = self.r + 0.008 end
+            if (btn(3)) then self.r = self.r - 0.008 end
 
             if rnd(100) < 1 and not self.exploded then
                 self.exploded = true
@@ -291,17 +332,60 @@ end
 
 return tetromino;
 end
+mb94f04441f1a64eb3220caee4282b447 = mb94f04441f1a64eb3220caee4282b447()
+--------------sub-module-C:\Users\autod\OneDrive\Dokumente\pico8\carts\space\listencontrols.lua---------------------
+mdfff46c12691ff25bf3fe5820c9617cb = function()
+    local conf = m86071b29ef5ab36a54d653581fcfd8c8
+
+local mousestats = {
+    m1 = -1,
+    m2 = -1,
+    x = 0,
+    y = 0
+}
+
+function listencontrols()
+
+    if (btn(4, 0)) then camera.z = camera.z + 0.1 end
+    if (btn(5, 0)) then camera.z = camera.z - 0.1 end
+
+    if (btnp(4, 1)) then conf:togglePause() end
+    if (btnp(5, 1)) then conf:toggleDebug() end
+
+    if stat(34) == 1 then
+
+        if (mousestats.m1 == -1) then
+            mousestats.m1 = stat(32)
+            mousestats.m2 = stat(33)
+            mousestats.x = camera.x
+            mousestats.y = camera.y
+        end
+
+        --  rotate camera
+        camera.x = mousestats.x - (mousestats.m1 - stat(32))
+        camera.y = mousestats.y - (mousestats.m2 - stat(33))
+    else
+        mousestats.m1 = -1
+    end
+end
+
+return listencontrols;
+end
+mdfff46c12691ff25bf3fe5820c9617cb = mdfff46c12691ff25bf3fe5820c9617cb()
 
 --------------root-module---------------------
 --triangle flight
 --by kepikoi
-local helpers = me50f94349c050c92b67a239b71bb5d5a();
-local tetromino = mb94f04441f1a64eb3220caee4282b447();
-local conf = m86071b29ef5ab36a54d653581fcfd8c8();
+local helpers = me50f94349c050c92b67a239b71bb5d5a;
+local tetromino = mb94f04441f1a64eb3220caee4282b447;
+local conf = m86071b29ef5ab36a54d653581fcfd8c8;
+local listencontrols = mdfff46c12691ff25bf3fe5820c9617cb;
 
 function _init()
 
     poke(0x5f2d, 1) --mouse support for shits and giggles
+
+    lastCpu = stat(1);
 
     camera = {
         x = 0,
@@ -313,62 +397,29 @@ function _init()
         f = 40 --focal length of camera
     }
 
-    --temp store for last click
-    laststats = {
-        cpu = 0
-    }
-
     --Model metatable models store
     models = {}
-
 
     function drawmouse()
         spr(1, stat(32), stat(33))
     end
 
     function drawdebug()
-        --print('mousex: ' .. stat(32) .. ' mousey: ' .. stat(33) .. ' click:' .. stat(34), 0, 0, 7)
-        --print('lastx:'..laststats.x,0,7,7)
+        print('mousex: ' .. stat(32) .. ' mousey: ' .. stat(33) .. ' click:' .. stat(34), 0, 0, 7)
         print('p:' .. camera.p .. ' w:' .. camera.w .. ' r:' .. helpers.flrd(camera.r, 2), 0, 104, 7)
         print('x:' .. helpers.flrd(camera.x, 2) .. ' y:' .. helpers.flrd(camera.y, 2) .. ' z:' .. helpers.flrd(camera.z, 1) .. ' f:' .. camera.f, 0, 110, 7)
         print('models:' .. #models, 0, 116, 7)
-        print('cpu:' .. helpers.flrd(100 * laststats.cpu, 0) .. '% ram:' .. helpers.flrd(stat(0), 2), 0, 122, 7)
-    end
-
-    function listencontrols()
-        if (btn(0)) then camera.p = camera.p + 0.005 end
-        if (btn(1)) then camera.p = camera.p - 0.005 end
-        if (btn(2)) then camera.w = camera.w + 0.005 end
-        if (btn(3)) then camera.w = camera.w - 0.005 end
-        if (btn(4, 0)) then camera.z = camera.z + 0.1 end
-        if (btn(5, 0)) then camera.z = camera.z - 0.1 end
-
-        if (btnp(4, 1)) then conf.pause = not conf.pause end
-        if (btnp(5, 1)) then conf.debug = not conf.debug end
-
-        if stat(34) == 1 then
-            if (laststats.m1 == -1) then
-                laststats.m1 = stat(32)
-                laststats.m2 = stat(33)
-                laststats.x = camera.x
-                laststats.y = camera.y
-            end
-
-            --  rotate camera
-            camera.x = laststats.x - (laststats.m1 - stat(32))
-            camera.y = laststats.y - (laststats.m2 - stat(33))
-        else
-            laststats.m1 = -1
-        end
+        print('cpu:' .. helpers.flrd(100 * stat(1), 0) .. '% ram:' .. helpers.flrd(stat(0), 2), 0, 122, 7)
     end
 end
 
 function _update60()
+
     listencontrols()
 
     if (not conf.pause) then
         -- add tetrominos until cpu threshold
-        if laststats.cpu < conf.maxCpu and #models < conf.maxmodels then
+        if lastCpu < conf.maxCpu and #models < conf.maxModels then
             add(models, tetromino())
         end
 
@@ -395,8 +446,7 @@ function _draw()
     end
 
     drawmouse()
-
-    laststats.cpu = stat(1)
+    lastCpu = stat(1);
 end
 __gfx__
 00000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
